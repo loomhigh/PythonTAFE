@@ -1,4 +1,5 @@
 # Delivery Assesment Plan
+the Delivery Assesment plan of my Python Unit. Put here to function as a ReadMe, giving context to this repository.
 
 ## Session 1
 
