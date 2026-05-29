@@ -1,1 +1,1 @@
-contact_id	 contact_type	 first_name	 last_name	 ph_num	 email
+['contact_id', 'first_name', 'last_name', 'ph_num', 'email', 'category']
