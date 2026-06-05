@@ -65,7 +65,23 @@ DEFINE FUNCTION <func_delete> WITH PARAMETERS
     OUTPUT "Enter Contact ID"
     WRITE "contacts.txt" removing data with ID from USERINPUT
 DEFINE FUNCTION <func_add> WITH PARAMETERS
-
+    OUTPUT "what is their name?"
+    Set <contact_name> to USERINPUT
+    OUTPUT "What is their number?"
+    set <contact_number> to USERINPUT
+    OUTPUT "what is their email?"
+    set <contact_email> to USERINPUT
+    OUTPUT "are they a friend or family?"
+    set <contact_tag> to USERINPUT
+    PRINT "The following contact has been created"
+    set <contact_details> to list of <contact_name>,<contact_number>,<contact_email>,<contact_tag>
+    PRINT <contact_details>
+    OUTPUT "Would you like to save the contact?"
+    if USERINPUT is "Yes" THEN
+        set <user_id> to 1 plus number of contacts in "contacts.txt"
+        set <new_contact> to list containing 6 items from <user_id>,<contact_name>,<contact_number>,<contact_email>,<contact_tag>
+    if USERINPUT is "No" THEN
+        BREAK
 DEFINE FUNCTION <func_save> WITH PARAMETERS <newcontacts>
     WRITE "contacts.txt" appending <contacts_list>
 ## select user actions
@@ -76,21 +92,22 @@ WHILE <selection> is not "exit"
 OUTPUT "Select: [1] View, [2] Delete, [3] Add, [4] Save, [5] exit"
 SET <selection> to USERINPUT
 
-IF <selection> is "1" THEN
+IF <selection> is "1" or "View" THEN
     IF file "contacts.txt" exists
         READ "contacts.txt"
     ELSE
         OUTPUT "There are no Contacts to View "
-ELIF <selection> is "2" THEN
+ELIF <selection> is "2" or "Delete" THEN
     CALL <func_delete>
-ELIF <selection> is "3" THEN
-    CALL <func_add>
-ELIF <selection> is "4" THEN
+ELIF <selection> is "3" or "Add" THEN
+    set <contacts_list> to <contacts_list> and <new_contact> in CALL <func_add>
+    
+ELIF <selection> is "4" or "Save" THEN
     CALL <func_save>
-ELIF <selection> is "5" THEN
+ELIF <selection> is "5" or "Exit" THEN
     OUTPUT "are you sure? any unsaved data will be lost [Y/N]"
     IF USERINPUT is "Y"
-        SET <selection> to "exit"
+        EXIT program
     ELSE
         OUTPUT "cancelling Exit"
 ELSE
@@ -111,7 +128,7 @@ print("Welcome to Project A, the Simple Contacts Application!")
 ## Creating the Contacts file relative to the activation script
 ## regardless of if run in debug or from terminal
 
-contacts_list = ""
+contacts_list = []
 contacts_path = os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles/Contacts.txt"
 contacts_heading = ["contact_id", "first_name", "last_name", "ph_num", "email", "category"]
 if not os.path.exists(contacts_path):
@@ -122,7 +139,17 @@ if not os.path.exists(contacts_path):
 ## MAJOR FUNCTIONS
 ### Add Contacts Function
 #### For creating a new contact and adding it to the contacts_list variable
-def add_func(contact):
+def add_func():
+    '''
+    Local Vars:
+        first_name: First name of the contact
+        last_name:  Last name of the contact
+        ph_num:     Phone number of the contact, must be either 10 digits or blank. All spaces will automatically be removed
+        email:      Contacts Email Address. no special rules, just a string.
+        category:   Option of tagging the contact as either friend, family, or left blank
+        contact:    To be used to append the new contact to the global contacts_list variable
+    '''
+    newcontact_id = '' #creates 
     first_name = input("first name: ")
     last_name = input("last name: ")
     
@@ -131,7 +158,7 @@ def add_func(contact):
     ph_num = input("Phone Number (in 10 digits): ")
     ph_num = ph_num.replace(" ","") # for people who write 0400 000 000 instead of 0400000000
     if ph_num == "":
-        print("It is weird to add a contact without a contact number.\npress enter again to confirm this is what you want to do [enter]")
+        print("it is inadvisable to add a contact without a contact number.\npress enter again to confirm this is what you want to do [enter]")
     while len(ph_num) != 10 or (not ph_num.isdigit()): # will keep going until answer is 10 digits or blank
         print("not a correct format")
         ph_num = input("Phone Number (in 10 digits): ")
@@ -156,24 +183,24 @@ def add_func(contact):
         print("unrecognised tag, if only we can make custom tags! ")
     
     # Confirm contact details and append to list
-    if category == "":
+
+    if category == "": 
         confirm_contact = input(f"Confirm this contacts details:\nName: {first_name} {last_name}\nPhone Number: {ph_num}\nEmail: {email}\nuncategorised\n[1] YES\n[2] NO\n ")
     else:
-        confirm_contact = input(f"Confirm this contacts details:\nName: {first_name} {last_name}\nPhone Number: {ph_num}\nEmail: {email}\nplaced in the {category} group\n[1] YES\n[2] NO\n ")
-    while confirm_contact != "1":
+        confirm_contact = input(f"Confirm this contacts details:\nName: {first_name} {last_name}\nPhone Number: {ph_num}\nEmail: {email}\nplaced in group {category}\n[1] YES\n[2] NO\n ")
+    while confirm_contact is not True:
         if selection_func("Yes", "1", confirm_contact) == "1": 
-            confirm_contact = "1"
-            contact = "test"
-            return contact
-
-            print("Contact added.\nsave to file in main menu\n")
-
-        elif selection_func("No", "2", confirm_contact) == "2": 
-            confirm_contact = "2"
-            print("Contacts not saved\n")
+            contact = [newcontact_id,first_name,last_name,ph_num,email,category]   # sets contact to the contact details
+            return contact                                              # Returns to global variable, contactsr_list
+            print("Contact added.\nsave to file in main menu\n")        # Informs user that contact was added to Var
+            confirm_contact = True                                      # sets confirm_contact to true, breaking while loop
+        elif selection_func("No", "2", confirm_contact) == "2":         
+            confirm_contact = "2"                                       # sets confirm_contact to 2, which means no
+            print("Contact cancelled\n")                                # Informs user that the contact won't be saved
+            confirm_contact = True                                      # sets confirm_contact to true, breaking while loop
         else:
-            print("unrecognised command\n")
-            confirm_contact = input("Confirm Contact? [Yes/No]")
+            print(f"command {confirm_contact} not recognised\n")        # relays incorrect command for user to correct
+            confirm_contact = input("Confirm Contact? [Yes/No]")        # Asks again
 
 ## MINOR FUNCTIONS
 ### Select Options Function
@@ -189,15 +216,18 @@ def selection_func(name, number, var_value):
 # Starting menu
 selection = "" # Variable that is used to determine the next action
 # exit_commands = ["Exit", "Quit", "Kill", "End", "Poweroff"]
-while selection != "forcequit" : #sets the program to end if you type forcequit. selection is set to this when you confirm exit
-    print("contacts to submit: ", contacts_list)
-    selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")
-    
+while selection != "forcequit" : #sets the program to end if you type forcequit.
+    if len(contacts_list) > 5:
+        print(len(contacts_list[1::6]), "contacts to submit: ", contacts_list[1::6])                                            # Shows how many contacts are in contacts list using a list of lists
+        selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")    #
+    else:                                                                                                                       #
+        print("no contacts to submit")                                                                                          #  
+        selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")    #
     # Actions to take depending on user choice
 
     if selection_func("Add","1",selection) == "1":
-        add_func(contacts_list)
-
+        for items in add_func():
+            contacts_list.append(items) ## CHANGE so that you have a list of lists instead of just one list
 
     elif selection_func("Save","2",selection) == "2":
         print("Saving function goes here")
