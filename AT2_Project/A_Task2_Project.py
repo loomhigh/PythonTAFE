@@ -101,7 +101,7 @@ ELIF <selection> is "2" or "Delete" THEN
     CALL <func_delete>
 ELIF <selection> is "3" or "Add" THEN
     set <contacts_list> to <contacts_list> and <new_contact> in CALL <func_add>
-    
+
 ELIF <selection> is "4" or "Save" THEN
     CALL <func_save>
 ELIF <selection> is "5" or "Exit" THEN
@@ -116,7 +116,8 @@ ELSE
 
 '''
 ## Setting up working directory, making sure it is always placed relative to the script file.
-import os
+import os #used for ensuring correct directory structure
+import time #adding sleep command. Purely aesthetic
 if not os.path.exists(os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles"):
     os.mkdir(os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles")
 current_dir = os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles"
@@ -147,9 +148,9 @@ def add_func():
         ph_num:     Phone number of the contact, must be either 10 digits or blank. All spaces will automatically be removed
         email:      Contacts Email Address. no special rules, just a string.
         category:   Option of tagging the contact as either friend, family, or left blank
-        contact:    To be used to append the new contact to the global contacts_list variable
+        new_contact: List containing contact details of newly inputted contact
     '''
-    newcontact_id = '' #creates 
+    newcontact_id = '' #creates Cariable newcontact_ID
     first_name = input("first name: ")
     last_name = input("last name: ")
     
@@ -217,21 +218,39 @@ def selection_func(name, number, var_value):
 selection = "" # Variable that is used to determine the next action
 # exit_commands = ["Exit", "Quit", "Kill", "End", "Poweroff"]
 while selection != "forcequit" : #sets the program to end if you type forcequit.
-    if len(contacts_list) > 5:
-        print(len(contacts_list[1::6]), "contacts to submit: ", contacts_list[1::6])                                            # Shows how many contacts are in contacts list using a list of lists
-        selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")    #
-    else:                                                                                                                       #
-        print("no contacts to submit")                                                                                          #  
-        selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")    #
+    if len(contacts_list) > 0:
+        print("\n",len(contacts_list), "contacts to submit: ", [row[1] for row in contacts_list])  
+        selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")         #
+    else:                                                                                                                            #
+        print("no contacts to submit")                                                                                               #  
+        selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")         #
     # Actions to take depending on user choice
 
+    # Add function COMPLETE
     if selection_func("Add","1",selection) == "1":
-        for items in add_func():
-            contacts_list.append(items) ## CHANGE so that you have a list of lists instead of just one list
+      contacts_list += [add_func()] #Adds returned function to contracts list list.
 
+    # Saving function INCOMPLETE
     elif selection_func("Save","2",selection) == "2":
-        print("Saving function goes here")
-        print(contacts_list)
+        # Vieing Submission
+        print("The following will be saved to",contacts_path,":")
+        time.sleep(0.2)
+        print(contacts_heading)
+        for row in contacts_list:
+            time.sleep(0.2) # Give the user time to comprehend that the list has been displayed
+            print(row, end="\n")
+        # / Viewing submission
+
+        # Save command
+        selection = input("\n Are you Sure you want to save? \nSelect your action\n [1] Yes \n [2] No\n")
+        if selection_func("Yes", "1", selection) == "1": 
+            print("NIL Feature")
+        elif selection_func("No", "2", selection) == "2": 
+            print("Cancelling...\n")
+        else:
+            print("unclear command.")
+        #/ Save command
+
     # Viewing function, COMPLETE                                    #
     elif selection_func("View","3",selection) == "3":               #
         print("Reading data from file ", contacts_path,": \n")      #
@@ -254,7 +273,7 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
             print("Quitting\n")
             selection = "forcequit"
         elif selection == selection_func("No",0,selection) == "0" or selection == "N" or selection == "n" or selection_func("Cancel",0,selection) == "0":
-            print("Cancelling Exit, reuturning to main menu\n...\n")
+            print("Returning to main menu\n...\n")
         else:
             print("unclear command, returning to main menu\n...\n")
     #for when the user inputs a value that has no programmed response
