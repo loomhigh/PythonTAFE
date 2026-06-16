@@ -21,24 +21,24 @@ Copyright (c) 2025 CITE Managed Services - All Rights Reserved
 #TASK DETAILS:
 
 Must include:
-- Sequence
-- Selection
-    - Selection must include Logical Operators
-- A collection data structure appropriate for the task
-- Files Operations (Reading from and writing to text files)
+- Sequence /
+- Selection /
+    - Selection must include Logical Operators /
+- A collection data structure appropriate for the task /
+- Files Operations (Reading from and writing to text files) /
 - the use of string manipulation to modify text
     - This can include string concatenation and formatting strings
-- A mathematic Operation.
-- Add contact and save contact are to be different
-- adding a contact adds the contact to a list
-- Saving a contact then adds the list to the file.
-- Phone number needs to be numeric and 10 digits
-- Viewing contacts displays contact information from the file.
-- Delete removed contacts from the file
-- use functions for add, view, delete, and save
+- A mathematic Operation. 
+- Add contact and save contact are to be different /
+- adding a contact adds the contact to a list /
+- Saving a contact then adds the list to the file. /
+- Phone number needs to be numeric and 10 digits /
+- Viewing contacts displays contact information from the file. /
+- Delete removed contacts from the file /
+- use functions for add, view, delete, and save /
 
-- Needs header commends
-- at least one library function
+- Needs header commends /
+- at least one library function /
 
 READ ALGORITHM
 - Open File in read mode
@@ -118,6 +118,7 @@ ELSE
 ## Setting up working directory, making sure it is always placed relative to the script file.
 import os #used for ensuring correct directory structure
 import time #adding sleep command. Purely aesthetic
+import datetime #used for creating IDs
 if not os.path.exists(os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles"):
     os.mkdir(os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles")
 current_dir = os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles"
@@ -143,6 +144,7 @@ if not os.path.exists(contacts_path):
 def add_func():
     '''
     Local Vars:
+        newcontact_ID: date and time down to the second used as a unique ID
         first_name: First name of the contact
         last_name:  Last name of the contact
         ph_num:     Phone number of the contact, must be either 10 digits or blank. All spaces will automatically be removed
@@ -150,12 +152,13 @@ def add_func():
         category:   Option of tagging the contact as either friend, family, or left blank
         new_contact: List containing contact details of newly inputted contact
     '''
-    newcontact_id = '' #creates Cariable newcontact_ID
+    timestamp = datetime.datetime.now()
+    newcontact_id = timestamp.strftime("%y%m%d%H%M%S") #creates unique newcontact ID
     first_name = input("first name: ")
     last_name = input("last name: ")
     
     # user inputs a number that has to be 10 digits, or leave blank despite better judgement
-    # Credit heinst on stackoverflow for some of this one
+    # Credit heinst's suggestions on stackoverflow for some of this one
     ph_num = input("Phone Number (in 10 digits): ")
     ph_num = ph_num.replace(" ","") # for people who write 0400 000 000 instead of 0400000000
     if ph_num == "":
@@ -222,7 +225,7 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
         print("\n",len(contacts_list), "contacts to submit: ", [row[1] for row in contacts_list])  
         selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")         #
     else:                                                                                                                            #
-        print("no contacts to submit")                                                                                               #  
+        print("\n no contacts to submit")                                                                                               #  
         selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")         #
     # Actions to take depending on user choice
 
@@ -230,9 +233,9 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
     if selection_func("Add","1",selection) == "1":
       contacts_list += [add_func()] #Adds returned function to contracts list list.
 
-    # Saving function INCOMPLETE
+    # Saving function COMPLETE
     elif selection_func("Save","2",selection) == "2":
-        # Vieing Submission
+        # Viewng Submission
         print("The following will be saved to",contacts_path,":")
         time.sleep(0.2)
         print(contacts_heading)
@@ -244,11 +247,18 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
         # Save command
         selection = input("\n Are you Sure you want to save? \nSelect your action\n [1] Yes \n [2] No\n")
         if selection_func("Yes", "1", selection) == "1": 
-            print("NIL Feature")
+            print("Saving...\n")
+            with open(contacts_path,"a") as newdata:
+                for items in contacts_list:
+                    newdata.write("%s\n" % items)
+             #newdata.write(contacts_list) #writes contacts_list variable to contacts file
+            contacts_list = "" # Clears contacts_list variable.
+
         elif selection_func("No", "2", selection) == "2": 
             print("Cancelling...\n")
         else:
             print("unclear command.")
+        
         #/ Save command
 
     # Viewing function, COMPLETE                                    #
@@ -258,11 +268,21 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
             with open(contacts_path,"r") as text_data:              # 
                 for line in text_data:                              #
                     print(line, end="")                             #
+                    time.sleep(0.2)                                 #
         else:                                                       #
-            print("ERROR: Can't find contacts file!\n")             #
-
+            print("ERROR: Can't find contacts file!\n")  
+                    
+    # Delete function
     elif selection_func("Delete","4",selection) == "4":
-        print("Delete function goes here")
+        print("\nSelect ID of contact you want to delete:\n")
+        if os.path.exists(contacts_path):                           #
+            with open(contacts_path,"r") as text_data:              # 
+                contact_read = text_data.read().splitlines()
+                for line in contact_read:
+                    element = line.splitlines()
+                    print([row[1] for row in element], end="")  #NEEDS FIXING, VARIABLE DOESN"T SHOW SELECTED ELEMENTS BUT ALL ELEMENTS
+                    time.sleep(0.2) 
+                    
 
 
     # Various options that allow for quitting the program
