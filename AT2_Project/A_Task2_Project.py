@@ -246,7 +246,7 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
     elif selection_func("Delete","4",selection) == "4":
         # Bring up contacts to delete
         delete_contact = ""
-        print("[UID] - First  Last")
+        print("[_____ID_____] - First  Last\n[1]            - Cancel    Action")
         if os.path.exists(contacts_path):                           #
             with open(contacts_path,"r") as text_data:              # 
                 contact_read = text_data.read().splitlines()
@@ -255,27 +255,32 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
                         time.sleep(0.2)
                         print(("[" + element.split()[0].replace("[","") + "] - " + element.split()[1] + "   " + element.split()[2]).replace("'","").replace(",",""))
                     delete_contact = input("\nSelect UID\n")
-                    if not delete_contact.isdigit():
+                    if selection_func("Exit","1",delete_contact) == "1" or selection_func("Quit","5",delete_contact) == "5" or selection_func("End","1",delete_contact) == "1" or selection_func("Kill","1",delete_contact) == "1":
+                        delete_contact = "000000000000"
+                    elif not delete_contact.isdigit():
                         print("not a valid number, try again:")
-                    if len(delete_contact) != 12:
+                    elif len(delete_contact) != 12:
                         print("Contact UID should be 12 digits, try again:")
-                        
+
         # Delete Selection
         for element in contact_read:
-            print(element.split()[0].replace("['","").replace("',",""))
             if element.split()[0].replace("['","").replace("',","") == delete_contact:
                 snuffed_person = element
             else:
                 print("...")
+                time.sleep(0.1)
         # Deleting For real
-        contact_read.pop(contact_read.index(snuffed_person))        # Deletes input contact from variable
-        if os.path.exists(contacts_path):                           #
-            with open(contacts_path,"w") as text_data:              # 
-                for line in contact_read:                            # 
-                    text_data.write("%s\n" % line)                            #  
+        snuffed_person = ""
+        if snuffed_person != "":
+            contact_read.pop(contact_read.index(snuffed_person))      # Deletes input contact from variable
+            if os.path.exists(contacts_path):                           #
+                with open(contacts_path,"w") as text_data:              # 
+                    for line in contact_read:                           # 
+                        text_data.write("%s\n" % line)                  #  
             
 
     # Various options that allow for quitting the program
+
     elif selection_func("Exit","5",selection) == "5" or selection_func("Quit","5",selection) == "5" or selection_func("End","5",selection) == "5" or selection_func("Kill","5",selection) == "5":
         selection = input("are you sure you want to Exit?\n Any unsaved data will be lost [Y/N]: ")
         # Allows you to answer with "Yes, Y, y, or repeating the exit command"
