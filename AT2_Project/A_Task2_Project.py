@@ -18,40 +18,6 @@ Copyright (c) 2025 CITE Managed Services - All Rights Reserved
 '''
 
 '''
-#TASK DETAILS:
-
-Must include:
-- Sequence /
-- Selection /
-    - Selection must include Logical Operators /
-- A collection data structure appropriate for the task /
-- Files Operations (Reading from and writing to text files) /
-- the use of string manipulation to modify text
-    - This can include string concatenation and formatting strings
-- A mathematic Operation. 
-- Add contact and save contact are to be different /
-- adding a contact adds the contact to a list /
-- Saving a contact then adds the list to the file. /
-- Phone number needs to be numeric and 10 digits /
-- Viewing contacts displays contact information from the file. /
-- Delete removed contacts from the file /
-- use functions for add, view, delete, and save /
-
-- Needs header commends /
-- at least one library function /
-
-READ ALGORITHM
-- Open File in read mode
-- Read each line sequentially until the end of the file is reached
-Process each line as it is read
-
-WRITE ALGORITHM
-- Open the file in write mode (overwriting any existing content)
-- Write each line sequentially to the file.
-
-'''
-
-'''
 #PSEUDOCODE:
 START
 ## Create contacts file
@@ -264,26 +230,50 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
     # Viewing function, COMPLETE                                    #
     elif selection_func("View","3",selection) == "3":               #
         print("Reading data from file ", contacts_path,": \n")      #
-        if os.path.exists(contacts_path):                           #
-            with open(contacts_path,"r") as text_data:              # 
-                for line in text_data:                              #
-                    print(line, end="")                             #
-                    time.sleep(0.2)                                 #
+        if os.path.exists(contacts_path):               
+            print(contacts_heading)
+            with open(contacts_path,"r") as text_data:  
+                contact_read = text_data.read().splitlines()            # 
+                for line in contact_read:    
+                    time.sleep(0.2)                            
+                    print(line, end="\n")
+                print(len(contact_read), "total contacts")            
+                input("press enter to return to menu")
         else:                                                       #
             print("ERROR: Can't find contacts file!\n")  
                     
     # Delete function
     elif selection_func("Delete","4",selection) == "4":
-        print("\nSelect ID of contact you want to delete:\n")
+        # Bring up contacts to delete
+        delete_contact = ""
+        print("[UID] - First  Last")
         if os.path.exists(contacts_path):                           #
             with open(contacts_path,"r") as text_data:              # 
                 contact_read = text_data.read().splitlines()
-                for line in contact_read:
-                    element = line.splitlines()
-                    print([row[1] for row in element], end="")  #NEEDS FIXING, VARIABLE DOESN"T SHOW SELECTED ELEMENTS BUT ALL ELEMENTS
-                    time.sleep(0.2) 
-                    
-
+                while len(delete_contact) != 12 or (not delete_contact.isdigit()):
+                    for element in contact_read:
+                        time.sleep(0.2)
+                        print(("[" + element.split()[0].replace("[","") + "] - " + element.split()[1] + "   " + element.split()[2]).replace("'","").replace(",",""))
+                    delete_contact = input("\nSelect UID\n")
+                    if not delete_contact.isdigit():
+                        print("not a valid number, try again:")
+                    if len(delete_contact) != 12:
+                        print("Contact UID should be 12 digits, try again:")
+                        
+        # Delete Selection
+        for element in contact_read:
+            print(element.split()[0].replace("['","").replace("',",""))
+            if element.split()[0].replace("['","").replace("',","") == delete_contact:
+                snuffed_person = element
+            else:
+                print("...")
+        # Deleting For real
+        contact_read.pop(contact_read.index(snuffed_person))        # Deletes input contact from variable
+        if os.path.exists(contacts_path):                           #
+            with open(contacts_path,"w") as text_data:              # 
+                for line in contact_read:                            # 
+                    text_data.write("%s\n" % line)                            #  
+            
 
     # Various options that allow for quitting the program
     elif selection_func("Exit","5",selection) == "5" or selection_func("Quit","5",selection) == "5" or selection_func("End","5",selection) == "5" or selection_func("Kill","5",selection) == "5":
