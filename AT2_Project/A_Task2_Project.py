@@ -101,7 +101,7 @@ contacts_path = os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles/Con
 contacts_heading = ["contact_id", "first_name", "last_name", "ph_num", "email", "category"]
 if not os.path.exists(contacts_path):
     with open(current_dir + "/Contacts.txt","w+") as text_data:
-        text_data.write(str(contacts_heading))
+        text_data.write("")
 
 # CREATING DEFS
 ## MAJOR FUNCTIONS
