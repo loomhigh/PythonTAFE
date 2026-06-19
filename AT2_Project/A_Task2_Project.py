@@ -132,6 +132,7 @@ def add_func():
     while len(ph_num) != 10 or (not ph_num.isdigit()): # will keep going until answer is 10 digits or blank
         print("not a correct format")
         ph_num = input("Phone Number (in 10 digits): ")
+        ph_num = ph_num.replace(" ","")
         if ph_num == "":
             break
     
@@ -243,8 +244,10 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
             print("ERROR: Can't find contacts file!\n")  
                     
     # Delete function
+       
     elif selection_func("Delete","4",selection) == "4":
         # Bring up contacts to delete
+        snuffed_person = ""
         delete_contact = ""
         print("[_____ID_____] - First  Last\n[1]            - Cancel    Action")
         if os.path.exists(contacts_path):                           #
@@ -270,7 +273,6 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
                 print("...")
                 time.sleep(0.1)
         # Deleting For real
-        snuffed_person = ""
         if snuffed_person != "":
             contact_read.pop(contact_read.index(snuffed_person))      # Deletes input contact from variable
             if os.path.exists(contacts_path):                           #
@@ -293,7 +295,11 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
             print("unclear command, returning to main menu\n...\n")
     #for when the user inputs a value that has no programmed response
     else:
-        print("Not a recognised command, try again")
+        if selection == "forcequit":
+            print("\nForce Quitting... ")
+        else:
+            print("Not a recognised command, try again")
+            time.sleep(0.5)
 
     ## Changes value of add_new_contact so it will always be the lowercase first letter of the input
     
