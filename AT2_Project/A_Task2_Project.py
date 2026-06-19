@@ -263,7 +263,7 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
                 for line in contact_read:    
                     time.sleep(0.2)                            
                     print(line, end="")
-                print(len(contact_read), "total contacts")            
+                print("\n", len(contact_read), "total contacts")            
                 input("press enter to return to menu")
         else:                                                       #
             print("ERROR: Can't find contacts file!\n")  
