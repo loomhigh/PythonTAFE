@@ -306,7 +306,7 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
             if os.path.exists(contacts_path):                           #
                 with open(contacts_path,"w") as text_data:              # 
                     for line in contact_read:                           # 
-                        text_data.write("%s\n" % line)                  #  
+                        text_data.write(line)                  #  
             
 
     # Various options that allow for quitting the program
