@@ -255,11 +255,14 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
         print("Reading data from file ", contacts_path,": \n")      #
         if os.path.exists(contacts_path):               
             print(contacts_heading)
-            with open(contacts_path,"r") as text_data:  
-                contact_read = text_data.read().splitlines()            # 
+            contact_read = []
+            with open(contacts_path,"r") as text_data:
+                for element in text_data:
+                    contact_read += [element]
+                #contact_read = text_data.read().splitlines()            # 
                 for line in contact_read:    
                     time.sleep(0.2)                            
-                    print(line, end="\n")
+                    print(line, end="")
                 print(len(contact_read), "total contacts")            
                 input("press enter to return to menu")
         else:                                                       #
@@ -273,8 +276,11 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
         delete_contact = ""
         print("[_____ID_____] - First  Last\n[1]            - Cancel    Action")
         if os.path.exists(contacts_path):                           #
+            contact_read = []
             with open(contacts_path,"r") as text_data:              # 
-                contact_read = text_data.read().splitlines()
+                for element in text_data:
+                    contact_read += [element]
+                #contact_read = text_data.read().splitlines()
                 while len(delete_contact) != 12 or (not delete_contact.isdigit()):
                     for element in contact_read:
                         time.sleep(0.2)
@@ -315,10 +321,13 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
             print("Returning to main menu\n...\n")
         else:
             print("unclear command, returning to main menu\n...\n")
+    
     #for when the user inputs a value that has no programmed response
     else:
-        if selection == "forcequit":
+        if selection == "forcequit": #instantly closes progrm
             print("\nForce Quitting... ")
+        elif selection == "restart": #Restarts the script, useful if save file deleted mid-run
+            os.execv(sys.argv[0], sys.argv)
         else:
             print("Not a recognised command, try again")
             time.sleep(0.5)
