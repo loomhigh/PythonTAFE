@@ -233,12 +233,15 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
         # Save command
         selection = input("\n Are you Sure you want to save? \nSelect your action\n [1] Yes \n [2] No\n")
         if selection_func("Yes", "1", selection) == "1": 
-            print("Saving...\n")
-            with open(contacts_path,"a") as newdata:
-                for items in contacts_list:
-                    newdata.write("%s\n" % items)
-             #newdata.write(contacts_list) #writes contacts_list variable to contacts file
-            contacts_list = [] # Clears contacts_list variable.
+            if os.path.exists(contacts_path): 
+                print("Saving...\n")
+                with open(contacts_path,"a") as newdata:
+                    for items in contacts_list:
+                        newdata.write("%s\n" % items)
+                #newdata.write(contacts_list) #writes contacts_list variable to contacts file
+                contacts_list = [] # Clears contacts_list variable.
+            else:
+                print("ERROR: Contacts file not found. Restart program to fix!\n")
 
         elif selection_func("No", "2", selection) == "2": 
             print("Cancelling...\n")
