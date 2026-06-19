@@ -212,6 +212,7 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
 
     # Add function COMPLETE
     if selection_func("Add","1",selection) == "1":
+        adding_new_contact = []
         adding_new_contact = [add_func()]
         if adding_new_contact != [None]:
             contacts_list += adding_new_contact #Adds returned function to contracts list list.
@@ -237,7 +238,7 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
                 for items in contacts_list:
                     newdata.write("%s\n" % items)
              #newdata.write(contacts_list) #writes contacts_list variable to contacts file
-            contacts_list = "" # Clears contacts_list variable.
+            contacts_list = [] # Clears contacts_list variable.
 
         elif selection_func("No", "2", selection) == "2": 
             print("Cancelling...\n")
