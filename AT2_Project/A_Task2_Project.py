@@ -140,23 +140,33 @@ def add_func():
 
     # Tag system, with stub to leave room for adding custom tags feature in the future
     category = input("Tag this contact as\n[1] Friend \n[2] Family: ")
+    #while category != "1" or category != "2":
     if selection_func("Friend","1",category) == "1":
+        category = "1"
         print("Contact saved as a friend\n")
     elif selection_func("custom","2",category) == "2":
+        category = "2"
         print("Contact saved as family\n")
     elif selection_func("custom","0",category) == "0":
         category = ""
-        print("Custom tag feature coming soon!")
+        print("Custom tag feature coming soon!\n")
+        category = input("Tag this contact as\n[1] Friend \n[2] Family: ")
     elif category == "":
-        print("Saved without a category")
+        print("You Need to select a category\n")
+        category = input("Tag this contact as\n[1] Friend \n[2] Family: ")
     else:
         category = ""
         print("unrecognised tag, if only we can make custom tags! ")
+        category = input("Tag this contact as\n[1] Friend \n[2] Family: ")
     
     # Confirm contact details and append to list
 
     if category == "": 
-        confirm_contact = input(f"Confirm this contacts details:\nName: {first_name} {last_name}\nPhone Number: {ph_num}\nEmail: {email}\nuncategorised\n[1] YES\n[2] NO\n ")
+        # confirm_contact = input(f"Confirm this contacts details:\nName: {first_name} {last_name}\nPhone Number: {ph_num}\nEmail: {email}\nuncategorised\n[1] YES\n[2] NO\n ")
+        print("No category selected")
+        contact = None
+        return contact 
+        confirm_contact = "2"
     else:
         confirm_contact = input(f"Confirm this contacts details:\nName: {first_name} {last_name}\nPhone Number: {ph_num}\nEmail: {email}\nplaced in group {category}\n[1] YES\n[2] NO\n ")
     while confirm_contact is not True:
@@ -168,10 +178,14 @@ def add_func():
         elif selection_func("No", "2", confirm_contact) == "2":         
             confirm_contact = "2"                                       # sets confirm_contact to 2, which means no
             print("Contact cancelled\n")                                # Informs user that the contact won't be saved
-            confirm_contact = True                                      # sets confirm_contact to true, breaking while loop
+            contact = None
+            return contact 
+            break                                                       # sets confirm_contact to true, breaking while loop
         else:
             print(f"command {confirm_contact} not recognised\n")        # relays incorrect command for user to correct
-            confirm_contact = input("Confirm Contact? [Yes/No]")        # Asks again
+            contact = None
+            return contact 
+            #confirm_contact = input("Confirm Contact? [Yes/No]")        # Asks again
 
 ## MINOR FUNCTIONS
 ### Select Options Function
@@ -192,13 +206,17 @@ while selection != "forcequit" : #sets the program to end if you type forcequit.
         print("\n",len(contacts_list), "contacts to submit: ", [row[1] for row in contacts_list])  
         selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")         #
     else:                                                                                                                            #
-        print("\n no contacts to submit")                                                                                               #  
+        print("\n no contacts are ready to submit")                                                                                               #  
         selection = input("\n...\nSelect your action\n [1] Add \n [2] Save \n [3] View\n [4] Delete\n [5] Exit \n Answer: ")         #
     # Actions to take depending on user choice
 
     # Add function COMPLETE
     if selection_func("Add","1",selection) == "1":
-      contacts_list += [add_func()] #Adds returned function to contracts list list.
+        adding_new_contact = [add_func()]
+        if adding_new_contact != [None]:
+            contacts_list += adding_new_contact #Adds returned function to contracts list list.
+        else:
+            print("no valid contact added, reverting to main menu\n")
 
     # Saving function COMPLETE
     elif selection_func("Save","2",selection) == "2":
