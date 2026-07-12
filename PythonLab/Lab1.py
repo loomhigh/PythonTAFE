@@ -18,7 +18,8 @@ import time #adding sleep command. Purely aesthetic
 if not os.path.exists(os.path.dirname(os.path.realpath(__file__)) + "/output"):
     os.mkdir(os.path.dirname(os.path.realpath(__file__)) + "/output")
 current_dir = os.path.dirname(os.path.realpath(__file__)) + "/output"
-contacts_path = os.path.dirname(os.path.realpath(__file__)) + "/output/data.txt"
+#contacts_path = os.path.dirname(os.path.realpath(__file__)) + "/output/data.txt"
+contacts_path = "/home/personal/Downloads/data.txt"
 
 
 json_file = input("enter Absolute path to json file ")
@@ -49,11 +50,14 @@ def json_extract_contacts(tag_filter):
         if contacts_last_name == "None":
             contacts_last_name = ""
         contacts_name = str(contacts_first_name)+" "+str(contacts_last_name)
+        if contacts_last_name == "":
+           contacts_name = str(contacts_first_name)+""+str(contacts_last_name)
         if contacts_name == "None":
            contacts_name = ""
-        contacts_tags = values["properties"].get("tags")
+        contacts_tags = ("\'"+", ".join(values["properties"].get("tags"))+"\'")
         if contacts_tags == "None":
             contacts_tags = ""
+        contacts_notes = "\'"+str(values["properties"].get("description"))+"\'"
         for data_type in values["data"]:
             if data_type["type"] == "address":
                 contacts_street = data_type["values"][0]["properties"].get("street")
@@ -62,23 +66,17 @@ def json_extract_contacts(tag_filter):
                 contacts_address = "\'"+str(contacts_street)+", "+str(contacts_city)+", "+str(contacts_postal)+"\'"
 
 
-    #print contact output
-        contacts_output = str(contacts_name)+","+str(contacts_address)+","+str(contacts_tags)
-
-        print(contacts_output)
-
-    #set data to blank again
+    #create CSV line and return as output
+        contacts_output = str(contacts_name)+","+str(contacts_address)+","+str(contacts_notes)+", "+str(contacts_tags)
         return(contacts_output)
+#Function to release Contacts
 tag_filter = input("What tag do you want to filter for? ")
 for values in json_contacts["values"]:
     if json_extract_contacts(tag_filter) != None:
         towrite = json_extract_contacts(tag_filter)
         with open(contacts_path,"a") as contacts:
+            print(towrite)
             contacts.write("%s\n" % towrite)
-
-    
-#    for properties in values["properties"]:
-#        print(properties.get("first_name"))
     time.sleep(0.01)
 #print(json_contacts)
 #print(json_to_python["type"])
