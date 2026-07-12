@@ -1,29 +1,30 @@
 
 '''
 Author: Wyatt Teakle
+
+Project to extract User data from Monica JSON Export.
+And express it as a CSV file.
 '''
 
-print("Welcome to Lab1")
+print("Monica JSON to CSV extractor")
 
 #'''
-#Session 5 Activity Code page 10
+#
+import os
+import json
 
-# Find and record the absolute path of current blank file IO program
-newmail = "y"
-while newmail == "y":
-    with open("/home/personal/Python/PythonTAFE/PythonLab/Topic5/Contacts.txt","a") as mytext:
-        new_mail = input("add to the mailing list: ")
-        mytext.write("\n" + new_mail)
-    newmail = input ("Would you like to add another? (Y/N) ")
-    newmail = str.lower(newmail[0])
+current_dir = os.path.dirname(os.path.realpath(__file__)) + "/ProjectFiles"
 
-with open("/home/personal/Python/PythonTAFE/PythonLab/Topic5/Contacts.txt", "r") as mytext:
-    for line in mytext:
-        print(line, end="")
+json_file = input("enter Absolute path to json file ")
 
+with open(json_file,"r") as data: json_contents = data.read()
 
+json_to_python = json.loads(json_contents)
 
+           # 
+    
 
+print(json_to_python)
 
 
 #'''

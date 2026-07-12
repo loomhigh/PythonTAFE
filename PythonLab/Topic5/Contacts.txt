@@ -1,3 +1,0 @@
-Jane.Doe@contoso.com
-Dan.Doe@contoso.com
-test.case1@debug.com
