@@ -20,10 +20,6 @@ if not os.path.exists(os.path.dirname(os.path.realpath(__file__)) + "/output"):
 current_dir = os.path.dirname(os.path.realpath(__file__)) + "/output"
 contacts_path = os.path.dirname(os.path.realpath(__file__)) + "/output/data.txt"
 
-# Source - https://stackoverflow.com/a/48005385
-# Posted by grafi71
-# Retrieved 2026-07-12, License - CC BY-SA 3.0
-
 
 json_file = input("enter Absolute path to json file ")
 
@@ -37,38 +33,52 @@ json_to_python = json.loads(json_contents) #dict
 json_account = json_to_python["account"] #dict
 json_data = json_account["data"] #list
 json_contacts = json_data[1]
-#json
-#json_users = json_data[0]
 
-#contact = [json_data,first_name,last_name,ph_num,email,category]   # sets contact to the contact details
-
-
-#json_output = json_to_python[input("enter desired data ")]
-x=0
-#with open(contacts_path,"w") as data: data.write(str(json_contacts,sep="\n"))
 print(type(json_contacts))
-#output_filter = input("what tags do you want to filter for")
 
-contacts_address = ""
+def json_extract_contacts(tag_filter):
+  if type(values["properties"].get("tags")) is list:
+      while  tag_filter in values["properties"].get("tags") or tag_filter == "":
+        contacts_address = ""
+    
+# Get contacts Name and Address, leaving invalid data blank
+        contacts_first_name = str(values["properties"].get("first_name"))
+        if contacts_first_name == "None":
+            contacts_first_name = ""
+        contacts_last_name = str(values["properties"].get("last_name"))
+        if contacts_last_name == "None":
+            contacts_last_name = ""
+        contacts_name = str(contacts_first_name)+" "+str(contacts_last_name)
+        if contacts_name == "None":
+           contacts_name = ""
+        contacts_tags = values["properties"].get("tags")
+        if contacts_tags == "None":
+            contacts_tags = ""
+        for data_type in values["data"]:
+            if data_type["type"] == "address":
+                contacts_street = data_type["values"][0]["properties"].get("street")
+                contacts_city = data_type["values"][0]["properties"].get("city")
+                contacts_postal = str(data_type["values"][0]["properties"].get("province"))+" "+str(data_type["values"][0]["properties"].get("postal_code"))
+                contacts_address = "\'"+str(contacts_street)+", "+str(contacts_city)+", "+str(contacts_postal)+"\'"
+
+
+    #print contact output
+        contacts_output = str(contacts_name)+","+str(contacts_address)+","+str(contacts_tags)
+
+        print(contacts_output)
+
+    #set data to blank again
+        return(contacts_output)
+tag_filter = input("What tag do you want to filter for? ")
 for values in json_contacts["values"]:
-    for data_type in values["data"]:
-        if data_type["type"] == "address":
-            contacts_street = data_type["values"][0]["properties"].get("street")
-            contacts_city = data_type["values"][0]["properties"].get("city")
-            contacts_address = "\'"+str(contacts_street)+" , "+str(contacts_city)+"\'"
-    #if condata_type == "address":
-    #    contacts_data = values["data"]
-    #else:
-    #    contacts_address = ""
-    #print(contacts_address)
-    contacts_name = str(values["properties"].get("first_name")),str(values["properties"].get("last_name"))
-    contacts_tags = values["properties"].get("tags")
-    contacts_output = str(contacts_name)+","+str(contacts_address)+","+str(contacts_tags)
+    if json_extract_contacts(tag_filter) != None:
+        towrite = json_extract_contacts(tag_filter)
+        with open(contacts_path,"a") as contacts:
+            contacts.write("%s\n" % towrite)
 
-    print(contacts_output)
-    contacts_address = ""
+    
 #    for properties in values["properties"]:
 #        print(properties.get("first_name"))
-    time.sleep(0.2)
+    time.sleep(0.01)
 #print(json_contacts)
 #print(json_to_python["type"])
